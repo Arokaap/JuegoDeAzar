@@ -5,7 +5,6 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.ObjectInput
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.lang.Exception
@@ -32,21 +31,6 @@ class Utilidades {
             do {
                 try {
                     value = readLine()?.toByte()
-                } catch (ex: Exception) {
-                    println("La opción introducida es incorrecta, vuelve a probar")
-                }
-            } while (value == null)
-
-            return value
-        }
-
-        fun pedirInt(texto: String): Int {
-            println(texto)
-            var value: Int? = null
-
-            do {
-                try {
-                    value = readLine()?.toInt()
                 } catch (ex: Exception) {
                     println("La opción introducida es incorrecta, vuelve a probar")
                 }
@@ -84,13 +68,30 @@ class Utilidades {
 
         fun seleccionarPartida(juegos: MutableList<Juego>) {
             if (juegos.isEmpty()) {
-                println("No hay datos guardados.")
+                limpiarPantalla()
+                println("\u001B[31m No hay datos guardados. \u001B[0m")
             } else {
-                println("----DATOS----")
+                textoVerde("----DATOS----")
                 for (juego in juegos) {
-                    println("Partida ${juego.getIdPartida()}")
+                    textoVerde("Partida ${juego.getIdPartida()}")
                 }
             }
+        }
+
+        fun limpiarPantalla() {
+            println("\n\n\n\n\n\n\n\n\n\n\n\n")
+        }
+
+        fun textoError(texto: String) {
+            println("\u001B[31m${texto}\u001B[0m")
+        }
+
+        fun textoVerde(texto: String) {
+            println("\u001B[32;1m${texto}\u001B[0m")
+        }
+
+        fun textoInformativo(texto: String) {
+            println("\u001b[33;1m${texto}\u001b[0m")
         }
     }
 

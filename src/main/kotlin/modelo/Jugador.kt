@@ -3,11 +3,12 @@ package modelo
 import java.io.Serializable
 
 class Jugador(id: Byte, nick: String, nombre: String, apellidos: String) : Serializable {
-    private val id: Byte
+    private var id: Byte
     private var nick: String
     private var ganadas: Byte
     private val nombre: String
     private val apellidos: String
+    private var acertado: Boolean = false
 
     init {
         this.id = id
@@ -18,12 +19,20 @@ class Jugador(id: Byte, nick: String, nombre: String, apellidos: String) : Seria
     }
 
     fun getNick(): String = nick
-    fun setNick(value: String) {
-        nick = value
+
+    fun getId(): Byte = id
+    fun setId(value: Byte) {
+        id = value
     }
 
     fun getGanadas(): Byte = ganadas
-    fun setGanadas(value: Byte) {
-        ganadas = value
+    fun sumarGanadas() {
+        ++ganadas
     }
+
+    fun getAcertado(): Boolean = acertado
+    fun setAcertado(value: Boolean) {
+        acertado = value
+    }
+
 }

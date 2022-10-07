@@ -2,35 +2,36 @@ package controlador
 
 import modelo.Juego
 import recursos.Utilidades
-import java.io.File
-import java.io.FileOutputStream
-import java.io.ObjectOutputStream
 
 fun main() {
-    var juegos: MutableList<Juego> = arrayListOf()
+    val juegos: MutableList<Juego> = Utilidades.cargarPartida()
     var repetir = true
-
-    juegos = Utilidades.cargarPartida()
 
     do {
         when (Juego.menuInicial()) {
             1.toByte() -> {
+                Utilidades.limpiarPantalla()
                 var juegoActual: Juego
 
                 if (juegos.isEmpty()) {
-                    juegoActual = Juego(1, ((Math.random()) * 10).toInt().toByte())
+                    juegoActual = Juego(1, ((Math.random() * (10 - 1 + 1)).toInt() + 1).toByte())
                 } else {
                     juegoActual =
-                        Juego(((juegos.last().getIdPartida()) + 1).toByte(), ((Math.random()) * 10).toInt().toByte())
+                        Juego(
+                            ((juegos.last().getIdPartida()) + 1).toByte(),
+                            ((Math.random() * (10 - 1 + 1)).toInt() + 1).toByte()
+                        )
                 }
 
                 do {
                     when (Juego.menuPartida()) {
                         1.toByte() -> {
                             if (juegoActual.getNumJugadores() != 0.toByte()) {
-                                println("existe jugadores")
+                                Utilidades.limpiarPantalla()
+                                juegoActual.jugar()
                             } else {
-                                println("Debes añadir al menos un jugador para iniciar la partida")
+                                Utilidades.limpiarPantalla()
+                                Utilidades.textoError("No existen jugadores para comenzar la partida")
                             }
                         }
 
@@ -39,10 +40,11 @@ fun main() {
                         }
 
                         3.toByte() -> {
+                            juegoActual.getJugadores()
 
                         }
 
-                        4.toByte() -> println("Eliminamos")
+                        4.toByte() -> juegoActual.eliminarJugador()
                         5.toByte() -> {
                             if (juegos.contains(juegoActual)) {
                                 juegos.remove(juegos[(juegoActual.getIdPartida()).toInt() - 1])
@@ -50,10 +52,19 @@ fun main() {
                             juegos.add(juegoActual)
 
                             Utilidades.guardarJuego(juegos)
-                            println("Guardado exitoso!")
+                            Utilidades.limpiarPantalla()
+                            Utilidades.textoVerde("Guardado exitoso!")
                         }
 
-                        6.toByte() -> repetir = false
+                        6.toByte() -> {
+                            Utilidades.limpiarPantalla()
+                            repetir = false
+                        }
+
+                        else -> {
+                            Utilidades.limpiarPantalla()
+                            Utilidades.textoError("Opción incorrecta")
+                        }
                     }
                 } while (repetir)
 
@@ -61,10 +72,12 @@ fun main() {
             }
 
             2.toByte() -> {
+                Utilidades.limpiarPantalla()
                 var existe = false
                 Utilidades.seleccionarPartida(juegos)
-                if (!juegos.isEmpty()) {
-                    var opc = Utilidades.pedirByte("\nSelecciona una partida:  (Para salir teclee 0)")
+                if (juegos.isNotEmpty()) {
+                    val opc = Utilidades.pedirByte("\nSelecciona el numero de una partida:  ")
+                    Utilidades.limpiarPantalla()
 
                     for (juego in juegos) {
                         if (juego.getIdPartida() == opc) {
@@ -73,9 +86,11 @@ fun main() {
                                 when (Juego.menuPartida()) {
                                     1.toByte() -> {
                                         if (juego.getNumJugadores() != 0.toByte()) {
-                                            println("existe jugadores")
+                                            Utilidades.limpiarPantalla()
+                                            juego.jugar()
                                         } else {
-                                            println("Debes añadir al menos un jugador para iniciar la partida")
+                                            Utilidades.limpiarPantalla()
+                                            Utilidades.textoError("No existen jugadores para comenzar la partida")
                                         }
                                     }
 
@@ -84,10 +99,10 @@ fun main() {
                                     }
 
                                     3.toByte() -> {
-
+                                        juego.getJugadores()
                                     }
 
-                                    4.toByte() -> println("Eliminamos")
+                                    4.toByte() -> juego.eliminarJugador()
                                     5.toByte() -> {
                                         if (juegos.contains(juego)) {
                                             juegos.remove(juegos[(juego.getIdPartida()).toInt() - 1])
@@ -95,10 +110,19 @@ fun main() {
                                         juegos.add(juego)
 
                                         Utilidades.guardarJuego(juegos)
-                                        println("Guardado exitoso!")
+                                        Utilidades.limpiarPantalla()
+                                        Utilidades.textoVerde("Guardado exitoso!")
                                     }
 
-                                    6.toByte() -> repetir = false
+                                    6.toByte() -> {
+                                        Utilidades.limpiarPantalla()
+                                        repetir = false
+                                    }
+
+                                    else -> {
+                                        Utilidades.limpiarPantalla()
+                                        Utilidades.textoError("Opción incorrecta")
+                                    }
                                 }
                             } while (repetir)
 
@@ -106,44 +130,63 @@ fun main() {
                         }
                     }
                     if (!existe) {
-                        println("La partida seleccionada no existe")
+                        Utilidades.textoError("La partida seleccionada no existe")
                     }
                 }
             }
 
             3.toByte() -> {
+                Utilidades.limpiarPantalla()
                 Utilidades.seleccionarPartida(juegos)
                 try {
-                    if (!juegos.isEmpty()) {
-                        var opcion = Utilidades.pedirByte("\nIntroduce la partida que deseas eliminar:")
+                    if (juegos.isNotEmpty()) {
+                        val opcion = Utilidades.pedirByte("\nIntroduce el numero de la partida que deseas eliminar:")
+                        Utilidades.limpiarPantalla()
                         var borrado = false
                         for (juego in juegos) {
                             if (juego.getIdPartida() == opcion) {
                                 juegos.remove(juego)
-                                Utilidades.guardarJuego(juegos)
-                                println("La partida ha sido eliminada correctamente")
+                                Utilidades.textoVerde("La partida ha sido eliminada correctamente")
                                 borrado = true
                                 break
                             }
                         }
+
+                        for (juego in juegos) {
+                            if (juego.getIdPartida() > opcion && borrado) {
+                                juego.setIdPartida((juego.getIdPartida() - 1).toByte())
+                            }
+                        }
+
                         if (!borrado) {
-                            println("No existe la partida seleccionada")
+                            Utilidades.textoError("La partida seleccionada no existe")
+                        } else {
+                            Utilidades.guardarJuego(juegos)
                         }
 
 
                     }
                 } catch (ex: Exception) {
-                    println("Error inesperado al borrar la partida")
+                    Utilidades.textoError("Error inesperado al borrar la partida")
                 }
             }
 
-            4.toByte() -> println("Todos los creditos reservados a:\nAarón Aragón Aroca")
+            4.toByte() -> {
+                Utilidades.limpiarPantalla()
+                println("Todos los creditos reservados a:")
+                Utilidades.textoVerde("Aarón Aragón Aroca")
+            }
+
             5.toByte() -> {
-                println("Gracias por jugar!")
+                Utilidades.limpiarPantalla()
+                Utilidades.textoVerde("Gracias por jugar!")
                 repetir = false
             }
 
-            else -> println("Opción no contemplada")
+            else -> {
+                Utilidades.limpiarPantalla()
+                Utilidades.textoError("Opción incorrecta")
+            }
 
         }
     } while (repetir)
