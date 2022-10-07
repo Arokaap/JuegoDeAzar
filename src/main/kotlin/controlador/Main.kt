@@ -45,7 +45,6 @@ fun main() {
                         4.toByte() -> println("Eliminamos")
                         5.toByte() -> {
                             if (juegos.contains(juegoActual)) {
-                                println("Contiene")
                                 juegos.remove(juegos[(juegoActual.getIdPartida()).toInt() - 1])
                             }
                             juegos.add(juegoActual)
@@ -62,7 +61,54 @@ fun main() {
             }
 
             2.toByte() -> {
+                var existe = false
                 Utilidades.seleccionarPartida(juegos)
+                if (!juegos.isEmpty()) {
+                    var opc = Utilidades.pedirByte("\nSelecciona una partida:  (Para salir teclee 0)")
+
+                    for (juego in juegos) {
+                        if (juego.getIdPartida() == opc) {
+                            existe = true
+                            do {
+                                when (Juego.menuPartida()) {
+                                    1.toByte() -> {
+                                        if (juego.getNumJugadores() != 0.toByte()) {
+                                            println("existe jugadores")
+                                        } else {
+                                            println("Debes añadir al menos un jugador para iniciar la partida")
+                                        }
+                                    }
+
+                                    2.toByte() -> {
+                                        juego.aniadirJugador()
+                                    }
+
+                                    3.toByte() -> {
+
+                                    }
+
+                                    4.toByte() -> println("Eliminamos")
+                                    5.toByte() -> {
+                                        if (juegos.contains(juego)) {
+                                            juegos.remove(juegos[(juego.getIdPartida()).toInt() - 1])
+                                        }
+                                        juegos.add(juego)
+
+                                        Utilidades.guardarJuego(juegos)
+                                        println("Guardado exitoso!")
+                                    }
+
+                                    6.toByte() -> repetir = false
+                                }
+                            } while (repetir)
+
+                            repetir = true
+                        }
+                    }
+                    if (!existe) {
+                        println("La partida seleccionada no existe")
+                    }
+                }
             }
 
             3.toByte() -> {
@@ -95,12 +141,6 @@ fun main() {
             5.toByte() -> {
                 println("Gracias por jugar!")
                 repetir = false
-            }
-
-            8.toByte() -> {
-                for (juego in juegos) {
-                    println(juego)
-                }
             }
 
             else -> println("Opción no contemplada")
