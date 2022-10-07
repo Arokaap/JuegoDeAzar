@@ -1,7 +1,9 @@
 package modelo
 
-class Jugador(id: Int, nick: String, ganadas: Byte, nombre: String, apellidos: String) {
-    private val id: Int
+import java.io.Serializable
+
+class Jugador(id: Byte, nick: String, nombre: String, apellidos: String) : Serializable {
+    private val id: Byte
     private var nick: String
     private var ganadas: Byte
     private val nombre: String
@@ -10,7 +12,7 @@ class Jugador(id: Int, nick: String, ganadas: Byte, nombre: String, apellidos: S
     init {
         this.id = id
         this.nick = nick
-        this.ganadas = ganadas
+        this.ganadas = 0
         this.nombre = nombre
         this.apellidos = apellidos
     }

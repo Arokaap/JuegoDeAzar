@@ -1,5 +1,13 @@
 package recursos
 
+import modelo.Juego
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.ObjectInput
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import java.lang.Exception
 
 /**
@@ -17,7 +25,7 @@ class Utilidades {
             return readLine().toString()
         }
 
-         fun pedirByte(texto: String): Byte {
+        fun pedirByte(texto: String): Byte {
             println(texto)
             var value: Byte? = null
 
@@ -30,6 +38,59 @@ class Utilidades {
             } while (value == null)
 
             return value
+        }
+
+        fun pedirInt(texto: String): Int {
+            println(texto)
+            var value: Int? = null
+
+            do {
+                try {
+                    value = readLine()?.toInt()
+                } catch (ex: Exception) {
+                    println("La opción introducida es incorrecta, vuelve a probar")
+                }
+            } while (value == null)
+
+            return value
+        }
+
+        fun guardarJuego(juegos: MutableList<Juego>) {
+            try {
+                val flujoHaciaFichero = ObjectOutputStream(FileOutputStream("partidas.dat"))
+                flujoHaciaFichero.writeObject(juegos)
+                flujoHaciaFichero.close()
+            } catch (ex: FileNotFoundException) {
+                println("Archivo no encontrado")
+            } catch (ex: IOException) {
+                ex.stackTrace
+            }
+        }
+
+        fun cargarPartida(): MutableList<Juego> {
+            var juegos: MutableList<Juego> = arrayListOf()
+            try {
+                val recuperar = ObjectInputStream(FileInputStream("partidas.dat"))
+                juegos = recuperar.readObject() as MutableList<Juego>
+            } catch (ex: FileNotFoundException) {
+                ex.stackTrace
+            } catch (ex: IOException) {
+                ex.stackTrace
+            } catch (ex: ClassNotFoundException) {
+                ex.stackTrace
+            }
+            return juegos
+        }
+
+        fun seleccionarPartida(juegos: MutableList<Juego>) {
+            if (juegos.isEmpty()) {
+                println("No hay datos guardados.")
+            } else {
+                println("----DATOS----")
+                for (juego in juegos) {
+                    println("Partida ${juego.getIdPartida()}")
+                }
+            }
         }
     }
 
